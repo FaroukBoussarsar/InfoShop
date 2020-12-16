@@ -1,24 +1,14 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { PRODUCTS } from "../data/dummy_data";
+import React, { useState } from 'react'
+import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
 
-const EditProductScreen = (props) => {
-  const { id } = props.route.params;
-
-  const [name, setName] = useState(PRODUCTS[id].name);
-  const [img, setImg] = useState(PRODUCTS[id].img);
-  const [description, setDescription] = useState(PRODUCTS[id].description);
-  const [minDesc, setMinDesc] = useState(PRODUCTS[id].minDesc);
-  const [prix, setPrix] = useState(PRODUCTS[id].prix);
-  const [dispo, setDispo] = useState(
-    PRODUCTS[id].dispo === "true" ? true : false
-  );
+const AddProductScreen=(props)=>{
+   
+  const [name, setName] = useState('');
+  const [img, setImg] = useState('');
+  const [description, setDescription] = useState('');
+  const [minDesc, setMinDesc] = useState('');
+  const [prix, setPrix] = useState('');
+  const [dispo, setDispo] = useState(true);
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{flexDirection:'row',justifyContent:'space-between',padding:20}}>
@@ -29,7 +19,7 @@ const EditProductScreen = (props) => {
           
           }}
         >
-          Edit {PRODUCTS[id].name}
+          ADD new Product
         </Text>
         <TouchableOpacity onPress={() => setDispo(!dispo)}>
           <View
@@ -165,6 +155,7 @@ const EditProductScreen = (props) => {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  );
-};
-export default EditProductScreen;
+    )
+}
+
+export default AddProductScreen

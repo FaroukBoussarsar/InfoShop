@@ -13,6 +13,8 @@ import { PersistGate } from 'redux-persist/es/integration/react'
 import { persistor, store } from './src/redux/store'
 import ProductScreen from "./src/screens/ProductScreen";
 import EditProductScreen from "./src/screens/EditProductScreen";
+import AddProductScreen from "./src/screens/AddProductScreen";
+import AddCategoryScreen from "./src/screens/AddCategoryScreen";
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
@@ -20,7 +22,7 @@ const Tab = createBottomTabNavigator();
 const HomeStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false,}} />
       <Stack.Screen name="ProductScreen" component={ProductScreen} />
       <Stack.Screen name="EditProductScreen" component={EditProductScreen} />
     </Stack.Navigator>
@@ -31,6 +33,8 @@ const SettingStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="SettingsScreen" component={SettingScreen} />
+      <Stack.Screen name="AddProductScreen" component={AddProductScreen} />
+      <Stack.Screen name="AddCategoryScreen" component={AddCategoryScreen} />
     </Stack.Navigator>
   );
 };

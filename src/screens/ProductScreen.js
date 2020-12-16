@@ -6,7 +6,6 @@ import { PRODUCTS } from "../data/dummy_data";
 const ProductScreen = (props) => {
 
 
-  
 
   const navigation = useNavigation();
  
@@ -17,6 +16,12 @@ const ProductScreen = (props) => {
     });
   };
   const { id } = props.route.params;
+  
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: PRODUCTS[id].name,
+    });
+  }, [navigation]);
 
   return (
     <View style={{flex:1,backgroundColor:'white'}}>
