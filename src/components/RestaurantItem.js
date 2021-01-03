@@ -15,17 +15,24 @@ const RestaurantItem = (props) => {
   const navigateDetails = () => {
     navigation.navigate("ProductScreen", {
       id: props.id,
+      title:props.title,
+      img:props.img,
+      path:props.path,
+      desc:props.desc,
+      mindesc:props.mindesc,
+     
+      type:props.type
     });
   };
 
   return (
     <View
       style={{
-        padding: 4,
+       
         flex: 1,
-        flexDirection: "row-reverse",
-        alignItems: "flex-start",
-        width: props.horizantal ? width * 0.8 : "100%",
+      
+        alignItems: "center",
+        width: "100%",
       }}
     >
 
@@ -43,7 +50,7 @@ const RestaurantItem = (props) => {
               shadowRadius: 6.68,
               shadowColor: "#000",
               elevation: 1,
-              width: "100%",
+              width: width*0.9,
               flex: 1,
               borderRadius: 10,
               overflow: "hidden",
@@ -57,6 +64,7 @@ const RestaurantItem = (props) => {
                   height: 200,
                   width: "100%",
                   flex: 1,
+                  resizeMode:'contain'
                 }}
               />
             </View>

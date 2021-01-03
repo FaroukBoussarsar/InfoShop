@@ -1,6 +1,6 @@
-import {  Thumbnail } from "native-base";
+
 import React from "react";
-import { TouchableOpacity, View,Text } from "react-native";
+import { TouchableOpacity, View,Text,Image } from "react-native";
 import { connect } from "react-redux";
 import { filterCategory } from "../redux/filter/filter.actions";
 
@@ -30,7 +30,7 @@ const CategorieItem = (props) => {
             elevation: 4,
           }}
         >
-          <Thumbnail small square source={{ uri: props.img }} />
+           <Image style={{width:50,height:50,resizeMode:'cover'}} source={{ uri: props.img }}/>
           <Text style={{ textAlign: "center", margin: 3 }}>{props.title}</Text>
         </View>
       </View>
