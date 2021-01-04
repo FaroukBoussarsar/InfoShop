@@ -20,8 +20,10 @@ const RestaurantItem = (props) => {
       path:props.path,
       desc:props.desc,
       mindesc:props.mindesc,
-     
-      type:props.type
+      isDispo:props.isDispo,
+      type:props.type,
+      price:props.price,
+      desclong:props.desclong
     });
   };
 

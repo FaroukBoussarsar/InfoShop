@@ -1,11 +1,64 @@
-import React from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
 import { connect } from "react-redux";
 import CategorieItem from "../components/CategorieItem";
 import RestaurantItem from "../components/RestaurantItem";
 import { CATEGORIES, PRODUCTS } from "../data/dummy_data";
 
 const HomeScreen = (props) => {
+  const [hasError, setErrors] = useState(false);
+  const [Category, setCategory] = useState({});
+  const [Product, setProduct] = useState({});
+  const [isLoading, seIsLoading] = useState(true);
+
+  useEffect(() => {
+    function fetchData() {
+      fetch("https://backend-jg5.conveyor.cloud/api/Categories")
+        .then((res) => res.json())
+        .then((res) => {
+          setCategory(res);
+        })
+
+        .catch((err) => {
+          setErrors(err);
+        })
+        // .finally(() => seIsLoading(false));
+
+      
+      fetch("https://backend-jg5.conveyor.cloud/api/Products")
+        .then((res) => res.json())
+        .then((res) => {
+          setProduct(res);
+        })
+
+        .catch((err) => {
+          setErrors(err);
+        })
+        .finally(() => seIsLoading(false));
+    }
+
+    fetchData();
+  }, []);
+
+  console.log(hasError);
+  console.log(Category);
+  console.log(Product);
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={{ backgroundColor: "white", flex: 1 }}>
       <View style={{ flex: 1 }}>
@@ -43,13 +96,13 @@ const HomeScreen = (props) => {
 
         <View style={{ marginTop: 20 }}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {CATEGORIES.map((item, index) => {
+            {Category.map((item, index) => {
               return (
                 <View
-                  key={item.id}
+                  key={item.categoryId}
                   style={{ marginLeft: index === 0 ? 20 : 5 }}
                 >
-                  <CategorieItem title={item.name} img={item.img} />
+                  <CategorieItem title={item.categoryName} img={item.image} />
                 </View>
               );
             })}
@@ -57,23 +110,24 @@ const HomeScreen = (props) => {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          {PRODUCTS.map((item, index) => {
+          {Product.map((item, index) => {
             if (props.category) {
               return (
                 <View
-                  key={item.id}
+                  key={item.productId}
                   style={{
                     paddingVertical: 4,
                   }}
                 >
-                  {!!props.category && item.Categorie === props.category && (
+                  {!!props.category && item.categoryId === props.category && (
                     <RestaurantItem
-                      title={item.name}
-                      img={item.img}
-                      path={item.Categorie}
-                      desc={item.minDesc}
-                      id={item.id}
-                      type={item.Categorie}
+                      title={item.productName}
+                      img={item.imageUrl}
+                      path={item.categoryId}
+                      desc={item.miniDescription}
+                      id={item.productId}
+                      type={item.categoryId}
+                      desclong={item.description}
                     />
                   )}
                 </View>
@@ -81,18 +135,21 @@ const HomeScreen = (props) => {
             }
             return (
               <View
-                key={item.id}
+                key={item.productId}
                 style={{
                   paddingVertical: 4,
                 }}
               >
                 <RestaurantItem
-                  title={item.name}
-                  img={item.img}
-                  path={item.Categorie}
-                  desc={item.minDesc}
-                  id={item.id}
-                  type={item.Categorie}
+                  title={item.productName}
+                  img={item.imageUrl}
+                  path={item.categoryId}
+                  desc={item.miniDescription}
+                  id={item.productId}
+                  type={item.categoryId}
+                  desclong={item.description}
+                  isDispo={item.isDispo}
+                  price={item.price}
                 />
               </View>
             );

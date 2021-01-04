@@ -2,8 +2,36 @@ import React, { useState } from "react";
 import { View,Text, TextInput,TouchableOpacity } from "react-native";
 
 const AddCategoryScreen = (props) => {
+
   const [name, setName] = useState("");
   const [img, setImg] = useState("");
+
+  const handlePress = async () => {
+    fetch("http://www.example.co.uk/login", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: 'test',
+            password: 'test123',
+        })
+    })
+
+        .then((response) => response.json())
+        .then((responseData) => {
+            console.log(
+                "POST Response",
+                "Response Body -> " + JSON.stringify(responseData)
+            )
+        })
+        .done();
+}
+  
+
+
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View

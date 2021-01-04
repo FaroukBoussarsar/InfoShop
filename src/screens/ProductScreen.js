@@ -15,11 +15,12 @@ const ProductScreen = (props) => {
       id: id,
     });
   };
-  const { id } = props.route.params;
+  console.log(props);
+  const { id,title,img,path,desc,type,desclong ,isDispo,price } = props.route.params;
   
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: PRODUCTS[id].name,
+      title:title,
     });
   }, [navigation]);
 
@@ -27,7 +28,7 @@ const ProductScreen = (props) => {
     <View style={{flex:1,backgroundColor:'white'}}>
      
       <Image
-        source={{ uri: PRODUCTS[id].img  }}
+        source={{ uri: img  }}
         style={{
           height: 200,
           width: "100%",
@@ -37,12 +38,12 @@ const ProductScreen = (props) => {
       />
       
       <View style={{flexDirection:'row',justifyContent:'space-between',padding:20}}>
-      <Text style={{fontSize:20,fontWeight:'bold'}}>{PRODUCTS[id].name}</Text>
-      <Text style={{fontSize:20 ,color:PRODUCTS[id].dispo==="true"?"green":"red"}}>{PRODUCTS[id].dispo==="true"?"dispo":"non dispo"}</Text>
+      <Text style={{fontSize:20,fontWeight:'bold'}}>{title}</Text>
+      <Text style={{fontSize:20 ,color:isDispo===true?"green":"red"}}>{isDispo===true?"dispo":"non dispo"}</Text>
       </View>
       <View style={{padding:20}}>
-        <Text> {PRODUCTS[id].description}</Text>
-        <Text style={{fontSize:20}}>{PRODUCTS[id].prix} TND</Text>
+        <Text> {desclong}</Text>
+        <Text style={{fontSize:20}}>{price} TND</Text>
       </View>
       <TouchableWithoutFeedback onLongPress={navigateDetails}>
         <View style={{flex:1}}></View>
