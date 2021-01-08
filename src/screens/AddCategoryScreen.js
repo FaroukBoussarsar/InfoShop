@@ -1,21 +1,52 @@
 import React, { useState } from "react";
-import { View,Text, TextInput,TouchableOpacity } from "react-native";
+import { View,Text, TextInput,TouchableOpacity,Image } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
+import { connect } from 'react-redux'
 
+import { onBoardingfilter } from '../redux/onBoarding/onBoarding.actions'
 const AddCategoryScreen = (props) => {
 
   const [name, setName] = useState("");
   const [img, setImg] = useState("");
+const [Error, setError] = useState('')
+const [image, setImage] = useState(null);
+
+
+
+
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.cancelled) {
+    setImage(result.uri);
+  }
+};
+
+
+
 
   const handlePress = async () => {
-    fetch("http://www.example.co.uk/login", {
+    try {
+      
+      props.setOnBoarding({
+        onBoarding: !props.onBoarding
+      })
+    fetch("https://backend-jg5.conveyor.cloud/api/Categories", {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: 'test',
-            password: 'test123',
+          categoryName: name,
+          image: image,
         })
     })
 
@@ -27,6 +58,9 @@ const AddCategoryScreen = (props) => {
             )
         })
         .done();
+      } catch (error) {
+      setError(error)
+      }
 }
   
 
@@ -66,24 +100,37 @@ const AddCategoryScreen = (props) => {
           value={name}
           onChangeText={(value) => setName(value)}
         />
-         <Text style={{ fontSize: 16, fontWeight: "bold" }}> img</Text>
-        <TextInput
-          placeholder="img"
-          placeholderColor="#c4c3cb"
-          style={{
-            width: "100%",
-            marginVertical: 5,
-            borderWidth: 1,
-            borderColor: "black",
-            borderRadius: 5,
-            height: 100,
-            padding: 10,
-          }}
-          value={img}
-          onChangeText={(value) => setImg(value)}
-          multiline
-        />
-         <TouchableOpacity style={{ marginVertical: 10 }}>
+          <TouchableOpacity
+        onPress={pickImage}
+        style={{ marginVertical: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#282828",
+              shadowColor: "#9A9A9A",
+              height: 40,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 6,
+              padding: 2,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                color: "white",
+                marginHorizontal: 5,
+              }}
+            >
+              Image
+            </Text>
+          </View>
+        </TouchableOpacity>
+        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      
+         <TouchableOpacity
+         onPress={handlePress}
+         style={{ marginVertical: 10 }}>
           <View
             style={{
               flexDirection: "row",
@@ -107,9 +154,23 @@ const AddCategoryScreen = (props) => {
             </Text>
           </View>
         </TouchableOpacity>
+        <Text style={{color:'red'}}>{Error}</Text>
         </View>
     </View>
   );
 };
+const mapStateToProps = state => {
+  return {
+    onBoarding: state.onBoarding.onBoarding
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    setOnBoarding: onBoarding => dispatch(onBoardingfilter(onBoarding))
+  }
+}
 
-export default AddCategoryScreen;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddCategoryScreen)

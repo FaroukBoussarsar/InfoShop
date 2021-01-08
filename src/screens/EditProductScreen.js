@@ -9,16 +9,62 @@ import {
 import { PRODUCTS } from "../data/dummy_data";
 
 const EditProductScreen = (props) => {
-  const { id } = props.route.params;
+ 
+  const { id,title,img,path,desc,type,desclong ,isDispo,price } = props.route.params;
 
-  const [name, setName] = useState(PRODUCTS[id].name);
-  const [img, setImg] = useState(PRODUCTS[id].img);
-  const [description, setDescription] = useState(PRODUCTS[id].description);
-  const [minDesc, setMinDesc] = useState(PRODUCTS[id].minDesc);
-  const [prix, setPrix] = useState(PRODUCTS[id].prix);
+  const [name, setName] = useState(title);
+  const [imge, setImg] = useState(img);
+  const [description, setDescription] = useState(desclong);
+  const [minDesc, setMinDesc] = useState(desc);
+  const [prix, setPrix] = useState(price);
   const [dispo, setDispo] = useState(
-    PRODUCTS[id].dispo === "true" ? true : false
+    isDispo 
   );
+
+
+
+  const [Error, setError] = useState('')
+  const handlePress = async () => {
+    try {
+      
+   
+    fetch(`https://backend-jg5.conveyor.cloud/api/Products/${id}`, {
+      method: "PUT",
+      headers:{
+          "Accept":"application/json",
+          "Content-Type":"application/json",
+    
+      },
+        body: JSON.stringify({
+          productId:id,
+          productName: name,
+          price:prix ,
+          description:description,
+          miniDescription:minDesc,
+          imageUrl:img,
+          isDispo:dispo,
+          categoryId:type
+  
+  
+  
+        })
+    })
+  
+        .then((response) => response.json())
+        .then((responseData) => {
+            console.log(
+                "POST Response",
+                "Response Body -> " + JSON.stringify(responseData)
+            )
+        })
+        .done();
+      } catch (error) {
+      setError(error)
+      }
+  }
+  console.log(Error);
+console.log(props);
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{flexDirection:'row',justifyContent:'space-between',padding:20}}>
@@ -29,7 +75,7 @@ const EditProductScreen = (props) => {
           
           }}
         >
-          Edit {PRODUCTS[id].name}
+          Edit {name}
         </Text>
         <TouchableOpacity onPress={() => setDispo(!dispo)}>
           <View
@@ -101,7 +147,7 @@ const EditProductScreen = (props) => {
             height: 50,
             padding: 10,
           }}
-          value={prix}
+          value={prix.toString()}
           onChangeText={(value) => setPrix(value)}
         />
         <Text style={{ fontSize: 16, fontWeight: "bold" }}> img</Text>
@@ -117,7 +163,7 @@ const EditProductScreen = (props) => {
             height: 100,
             padding: 10,
           }}
-          value={img}
+          value={imge}
           onChangeText={(value) => setImg(value)}
           multiline
         />
@@ -139,7 +185,9 @@ const EditProductScreen = (props) => {
           multiline
         />
 
-        <TouchableOpacity style={{ marginVertical: 10 }}>
+        <TouchableOpacity 
+        onPress={handlePress}
+        style={{ marginVertical: 10 }}>
           <View
             style={{
               flexDirection: "row",

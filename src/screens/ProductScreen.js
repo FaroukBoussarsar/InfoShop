@@ -7,16 +7,16 @@ const ProductScreen = (props) => {
 
 
 
+ 
+ const { id,title,img,path,desc,type,desclong ,isDispo,price } = props.route.params;
   const navigation = useNavigation();
- 
- 
   const navigateDetails = () => {
     navigation.navigate("EditProductScreen", {
-      id: id,
+      id:id,title:title,img:img,path:path,desc:desc,type:type,desclong:desclong ,isDispo:isDispo,price:price
     });
   };
   console.log(props);
-  const { id,title,img,path,desc,type,desclong ,isDispo,price } = props.route.params;
+  
   
   React.useLayoutEffect(() => {
     navigation.setOptions({

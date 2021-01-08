@@ -7,8 +7,8 @@ import { CATEGORIES, PRODUCTS } from "../data/dummy_data";
 
 const HomeScreen = (props) => {
   const [hasError, setErrors] = useState(false);
-  const [Category, setCategory] = useState({});
-  const [Product, setProduct] = useState({});
+  const [Category, setCategory] = useState([]);
+  const [Product, setProduct] = useState([]);
   const [isLoading, seIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,11 +38,13 @@ const HomeScreen = (props) => {
     }
 
     fetchData();
-  }, []);
+  }, [props.onBoarding,props.category]);
 
   console.log(hasError);
   console.log(Category);
   console.log(Product);
+
+console.log(props.onBoarding);
 
   if (isLoading) {
     return (
@@ -95,8 +97,8 @@ const HomeScreen = (props) => {
         </View>
 
         <View style={{ marginTop: 20 }}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {Category.map((item, index) => {
+          <ScrollView horizontal={true} >
+            {!!Category&&Category.map((item, index) => {
               return (
                 <View
                   key={item.categoryId}
@@ -110,7 +112,7 @@ const HomeScreen = (props) => {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          {Product.map((item, index) => {
+          {!!Product&&Product.map((item, index) => {
             if (props.category) {
               return (
                 <View
@@ -128,6 +130,8 @@ const HomeScreen = (props) => {
                       id={item.productId}
                       type={item.categoryId}
                       desclong={item.description}
+                      
+
                     />
                   )}
                 </View>
@@ -163,6 +167,7 @@ const HomeScreen = (props) => {
 const mapStateToProps = (state) => {
   return {
     category: state.filter.category,
+    onBoarding: state.onBoarding.onBoarding
   };
 };
 export default connect(mapStateToProps)(HomeScreen);

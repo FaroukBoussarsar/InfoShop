@@ -43,6 +43,7 @@ const CategorieItem = (props) => {
 const mapStateToProps = (state) => {
   return {
     category: state.filter.category,
+    
   };
 };
 const mapDispatchToProps = (dispatch) => {
