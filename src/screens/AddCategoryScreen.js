@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View,Text, TextInput,TouchableOpacity,Image } from "react-native";
+import { View,Text, TextInput,TouchableOpacity,Image,ActivityIndicator } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { connect } from 'react-redux'
 
@@ -11,7 +11,7 @@ const AddCategoryScreen = (props) => {
 const [Error, setError] = useState('')
 const [image, setImage] = useState(null);
 
-
+const [loading, setLoading] = useState(false)
 
 
 const pickImage = async () => {
@@ -22,7 +22,7 @@ const pickImage = async () => {
     quality: 1,
   });
 
-  console.log(result);
+
 
   if (!result.cancelled) {
     setImage(result.uri);
@@ -34,10 +34,8 @@ const pickImage = async () => {
 
   const handlePress = async () => {
     try {
-      
-      props.setOnBoarding({
-        onBoarding: !props.onBoarding
-      })
+      setLoading(true)
+     
     fetch("https://backend-jg5.conveyor.cloud/api/Categories", {
         method: 'POST',
         headers: {
@@ -56,8 +54,12 @@ const pickImage = async () => {
                 "POST Response",
                 "Response Body -> " + JSON.stringify(responseData)
             )
+            setLoading(false)
+            props.setOnBoarding({
+              onBoarding: !props.onBoarding
+            })
         })
-        .done();
+        .done(  );
       } catch (error) {
       setError(error)
       }
@@ -154,6 +156,16 @@ const pickImage = async () => {
             </Text>
           </View>
         </TouchableOpacity>
+       {!!loading&& <View
+        style={{
+   
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>}
         <Text style={{color:'red'}}>{Error}</Text>
         </View>
     </View>

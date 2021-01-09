@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
+  Image, ScrollView, Text,
   TextInput,
-  ScrollView,
-  TouchableOpacity,
+
+  TouchableOpacity, View,ActivityIndicator
 } from "react-native";
-import { PRODUCTS } from "../data/dummy_data";
+import { connect } from 'react-redux'
+
+import { onBoardingfilter } from '../redux/onBoarding/onBoarding.actions'
+
 
 const EditProductScreen = (props) => {
  
   const { id,title,img,path,desc,type,desclong ,isDispo,price } = props.route.params;
-
+const navigation =useNavigation()
   const [name, setName] = useState(title);
   const [imge, setImg] = useState(img);
   const [description, setDescription] = useState(desclong);
@@ -21,13 +25,45 @@ const EditProductScreen = (props) => {
     isDispo 
   );
 
+  const[loading,setLoading ]= useState(false)
 
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+   
+  }, [props.onBoarding]);
+
+
+  const [image, setImage] = useState(img);
 
   const [Error, setError] = useState('')
+
+  
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+
+
+  if (!result.cancelled) {
+    setImage(result.uri);
+  }
+};
   const handlePress = async () => {
     try {
       
-   
+   setLoading(true)
     fetch(`https://backend-jg5.conveyor.cloud/api/Products/${id}`, {
       method: "PUT",
       headers:{
@@ -41,7 +77,7 @@ const EditProductScreen = (props) => {
           price:prix ,
           description:description,
           miniDescription:minDesc,
-          imageUrl:img,
+          imageUrl:image,
           isDispo:dispo,
           categoryId:type
   
@@ -55,15 +91,53 @@ const EditProductScreen = (props) => {
             console.log(
                 "POST Response",
                 "Response Body -> " + JSON.stringify(responseData)
+                
             )
+            setLoading(false)
+            props.setOnBoarding({
+              onBoarding: !props.onBoarding
+            })
         })
         .done();
       } catch (error) {
       setError(error)
       }
   }
-  console.log(Error);
-console.log(props);
+
+  const handlePressDelete = async () => {
+    navigation.navigate('HomeScreen')
+    try {
+    
+
+    fetch(`https://backend-jg5.conveyor.cloud/api/Products/${id}`, {
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: null
+  
+        })
+   
+  
+        .then((response) => response.json())
+        .then((responseData) => {
+            console.log(
+                "POST Response",
+                "Response Body -> " + JSON.stringify(responseData)
+                
+            )
+            props.setOnBoarding({
+              onBoarding: !props.onBoarding
+            })
+           
+        })
+        .done();
+      } catch (error) {
+      setError(error)
+      }
+  }
+
+
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
@@ -77,6 +151,7 @@ console.log(props);
         >
           Edit {name}
         </Text>
+       
         <TouchableOpacity onPress={() => setDispo(!dispo)}>
           <View
             style={{
@@ -102,7 +177,9 @@ console.log(props);
           </View>
         </TouchableOpacity>
       </View>
+      
       <View style={{ paddingHorizontal: 20 }}>
+
         <Text style={{ fontSize: 16, fontWeight: "bold" }}> Name</Text>
         <TextInput
           placeholder="Name"
@@ -150,23 +227,36 @@ console.log(props);
           value={prix.toString()}
           onChangeText={(value) => setPrix(value)}
         />
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}> img</Text>
-        <TextInput
-          placeholder="img"
-          placeholderColor="#c4c3cb"
-          style={{
-            width: "100%",
-            marginVertical: 5,
-            borderWidth: 1,
-            borderColor: "black",
-            borderRadius: 5,
-            height: 100,
-            padding: 10,
-          }}
-          value={imge}
-          onChangeText={(value) => setImg(value)}
-          multiline
-        />
+       
+        
+      <TouchableOpacity
+        onPress={pickImage}
+        style={{ marginVertical: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#282828",
+              shadowColor: "#9A9A9A",
+              height: 40,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 6,
+              padding: 2,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                color: "white",
+                marginHorizontal: 5,
+              }}
+            >
+              Image
+            </Text>
+          </View>
+        </TouchableOpacity>
+        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+   
         <Text style={{ fontSize: 16, fontWeight: "bold" }}> description</Text>
         <TextInput
           placeholder="description"
@@ -211,8 +301,36 @@ console.log(props);
             </Text>
           </View>
         </TouchableOpacity>
+
+
+        {!!loading&& <View
+        style={{
+   
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>}
+      <Text style={{color:'red'}}>{Error}</Text>
       </View>
     </ScrollView>
   );
 };
-export default EditProductScreen;
+
+const mapStateToProps = state => {
+  return {
+    onBoarding: state.onBoarding.onBoarding
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    setOnBoarding: onBoarding => dispatch(onBoardingfilter(onBoarding))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditProductScreen)

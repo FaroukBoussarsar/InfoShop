@@ -155,7 +155,7 @@ const add = (cartItems, item) => {
       )
     }
     )
-    console.log(order);
+ 
     const tempOrder = order.filter(_order => {
 
       return (
@@ -166,9 +166,9 @@ const add = (cartItems, item) => {
       )
     }
     )[0];
-    console.log('temp', tempOrder);
+    
     if (tempOrder) {
-      console.log(' i am here');
+     
       const _ids = {
         restaurantID: item.id,
         id: tempOrder.id

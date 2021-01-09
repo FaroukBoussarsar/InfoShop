@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, Text, View,TouchableOpacity } from "react-native";
+
 import { connect } from "react-redux";
 import CategorieItem from "../components/CategorieItem";
 import RestaurantItem from "../components/RestaurantItem";
-import { CATEGORIES, PRODUCTS } from "../data/dummy_data";
+
 
 const HomeScreen = (props) => {
   const [hasError, setErrors] = useState(false);
@@ -40,11 +41,7 @@ const HomeScreen = (props) => {
     fetchData();
   }, [props.onBoarding,props.category]);
 
-  console.log(hasError);
-  console.log(Category);
-  console.log(Product);
 
-console.log(props.onBoarding);
 
   if (isLoading) {
     return (
@@ -101,10 +98,13 @@ console.log(props.onBoarding);
             {!!Category&&Category.map((item, index) => {
               return (
                 <View
+
                   key={item.categoryId}
                   style={{ marginLeft: index === 0 ? 20 : 5 }}
                 >
-                  <CategorieItem title={item.categoryName} img={item.image} />
+                  
+                  <CategorieItem  id={item.categoryId} title={item.categoryName} img={item.image} />
+          
                 </View>
               );
             })}

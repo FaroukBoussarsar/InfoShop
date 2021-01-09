@@ -1,12 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Image, TouchableWithoutFeedback } from "react-native";
-import { PRODUCTS } from "../data/dummy_data";
+import { connect } from "react-redux";
 
 const ProductScreen = (props) => {
 
 
-
+  useEffect(() => {console.log('reload');}, [props.onBoarding]);
  
  const { id,title,img,path,desc,type,desclong ,isDispo,price } = props.route.params;
   const navigation = useNavigation();
@@ -15,7 +15,7 @@ const ProductScreen = (props) => {
       id:id,title:title,img:img,path:path,desc:desc,type:type,desclong:desclong ,isDispo:isDispo,price:price
     });
   };
-  console.log(props);
+
   
   
   React.useLayoutEffect(() => {
@@ -51,4 +51,13 @@ const ProductScreen = (props) => {
     </View>
   );
 };
-export default ProductScreen;
+
+
+
+const mapStateToProps = (state) => {
+  return {
+
+    onBoarding: state.onBoarding.onBoarding
+  };
+};
+export default connect(mapStateToProps)( ProductScreen)

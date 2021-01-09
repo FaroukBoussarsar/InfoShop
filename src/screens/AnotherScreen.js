@@ -17,7 +17,7 @@ const HomeScreen  = () => {
      fetch("https://jsonplaceholder.typicode.com/posts")
         .then(res=> res.json())
         .then(res =>{ 
-          console.log(res);
+         
           setPlanets(res)})
         .catch(err => setErrors(err));
     }

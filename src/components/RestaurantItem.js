@@ -1,8 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Dimensions, Image, Text, TouchableOpacity, View ,Alert} from "react-native";
+
+import { connect } from "react-redux";
 
 
+import { onBoardingfilter } from '../redux/onBoarding/onBoarding.actions'
 const { width, height } = Dimensions.get("window");
 const RestaurantItem = (props) => {
 
@@ -10,7 +13,7 @@ const RestaurantItem = (props) => {
 
 
   const navigation = useNavigation();
- 
+  const [Error, setError] = useState('')
  
   const navigateDetails = () => {
     navigation.navigate("ProductScreen", {
@@ -27,6 +30,39 @@ const RestaurantItem = (props) => {
     });
   };
 
+
+  const handlePress = async () => {
+    try {
+    
+
+    fetch(`https://backend-jg5.conveyor.cloud/api/Categories/${props.id}`, {
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: null
+  
+        })
+   
+  
+        .then((response) => response.json())
+        .then((responseData) => {
+            console.log(
+                "POST Response",
+                "Response Body -> " + JSON.stringify(responseData)
+                
+            )
+            props.setOnBoarding({
+              onBoarding: !props.onBoarding
+            })
+        })
+        .done();
+      } catch (error) {
+      setError(error)
+      }
+  }
+ 
+console.log(Error);
   return (
     <View
       style={{
@@ -40,6 +76,21 @@ const RestaurantItem = (props) => {
 
       <View>
         <TouchableOpacity
+       onLongPress={()=>{
+        Alert.alert(
+          "Alert Title",
+          "My Alert Msg",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "OK", onPress:handlePress }
+          ],
+          { cancelable: false }
+        );
+      }}
        onPress={navigateDetails}
         >
           <View
@@ -110,4 +161,18 @@ const RestaurantItem = (props) => {
   );
 };
 
-export default RestaurantItem;
+const mapStateToProps = (state) => {
+  return {
+ 
+    onBoarding: state.onBoarding.onBoarding
+    
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    
+    setOnBoarding: onBoarding => dispatch(onBoardingfilter(onBoarding))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RestaurantItem)

@@ -1,13 +1,68 @@
 
-import React from "react";
-import { TouchableOpacity, View,Text,Image } from "react-native";
+import React, { useState } from "react";
+import { TouchableOpacity, View,Text,Image ,Alert} from "react-native";
 import { connect } from "react-redux";
 import { filterCategory } from "../redux/filter/filter.actions";
 
+import { onBoardingfilter } from '../redux/onBoarding/onBoarding.actions'
 const CategorieItem = (props) => {
+
+
+  const [Error, setError] = useState('')
+  const handlePress = async () => {
+    try {
+    
+
+    fetch(`https://backend-jg5.conveyor.cloud/api/Categories/${props.id}`, {
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: null
+  
+        })
+   
+  
+        .then((response) => response.json())
+        .then((responseData) => {
+            console.log(
+                "POST Response",
+                "Response Body -> " + JSON.stringify(responseData)
+                
+            )
+            props.setOnBoarding({
+              onBoarding: !props.onBoarding
+            })
+        })
+        .done();
+      } catch (error) {
+      setError(error)
+      }
+  }
  
   return (
-    <TouchableOpacity onPress={() => props.filter(props.title)}>
+    <TouchableOpacity 
+    onLongPress={()=>{
+      Alert.alert(
+        "Alert Title",
+        "My Alert Msg",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress:handlePress }
+        ],
+        { cancelable: false }
+      );
+    }}
+    
+    onPress={() =>{ props.filter(props.id)
+    
+    
+    
+    }}>
       <View style={{ alignContent: "center", alignItems: "center" }}>
         <View
           style={{
@@ -18,7 +73,7 @@ const CategorieItem = (props) => {
             alignItems: "center",
             borderRadius: 10,
             margin: 2,
-            borderWidth: props.category === props.title ? 1 : 0,
+            borderWidth: props.category === props.id ? 1 : 0,
             justifyContent: "center",
             shadowColor: '#9A9A9A',
             shadowOffset: {
@@ -43,12 +98,14 @@ const CategorieItem = (props) => {
 const mapStateToProps = (state) => {
   return {
     category: state.filter.category,
+    onBoarding: state.onBoarding.onBoarding
     
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     filter: (categ) => dispatch(filterCategory(categ)),
+    setOnBoarding: onBoarding => dispatch(onBoardingfilter(onBoarding))
   };
 };
 

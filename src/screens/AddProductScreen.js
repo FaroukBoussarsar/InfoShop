@@ -11,7 +11,7 @@ const AddProductScreen=(props)=>{
   const [Category, setCategory] = useState([]);
   const [image, setImage] = useState(null);
   const [isLoading, seIsLoading] = useState(true);
-
+const[loading,setLoading ]= useState(false)
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -38,7 +38,7 @@ const AddProductScreen=(props)=>{
     }
 
     fetchData();
-  }, []);
+  }, [props.onBoarding]);
 
    
   const [name, setName] = useState('');
@@ -59,7 +59,7 @@ const pickImage = async () => {
     quality: 1,
   });
 
-  console.log(result);
+
 
   if (!result.cancelled) {
     setImage(result.uri);
@@ -70,11 +70,9 @@ const pickImage = async () => {
 const [Error, setError] = useState('')
 const handlePress = async () => {
   try {
-    
+    setLoading(true)
       
-    props.setOnBoarding({
-      onBoarding: !props.onBoarding
-    })
+   
   fetch("https://backend-jg5.conveyor.cloud/api/Products", {
       method: 'POST',
       headers: {
@@ -101,6 +99,10 @@ const handlePress = async () => {
               "POST Response",
               "Response Body -> " + JSON.stringify(responseData)
           )
+          setLoading(false)
+          props.setOnBoarding({
+            onBoarding: !props.onBoarding
+          })
       })
       .done();
     } catch (error) {
@@ -110,10 +112,6 @@ const handlePress = async () => {
 
 
 
-
-
-console.log(Error);
-console.log(selectedValue);
 
 
 if (isLoading) {
@@ -303,6 +301,17 @@ if (isLoading) {
             </Text>
           </View>
         </TouchableOpacity>
+        {!!loading&& <View
+        style={{
+   
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>}
+      <Text style={{color:'red'}}>{Error}</Text>
       </View>
     </ScrollView>
     )
