@@ -16,7 +16,7 @@ const ProductScreen = (props) => {
     });
   };
 
-  
+
   
   React.useLayoutEffect(() => {
     navigation.setOptions({

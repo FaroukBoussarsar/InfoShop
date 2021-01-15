@@ -45,7 +45,7 @@ const CategorieItem = (props) => {
     onLongPress={()=>{
       Alert.alert(
         "Alert Title",
-        "My Alert Msg",
+        "want to delete this category ?",
         [
           {
             text: "Cancel",
